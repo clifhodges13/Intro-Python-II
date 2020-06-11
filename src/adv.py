@@ -37,10 +37,15 @@ room['treasure'].s_to = room['narrow']
 #
 # Main
 #
-
+line = '-'*40
 # Make a new player object that is currently in the 'outside' room.
-
-player1 = Player('Player 1', room['outside'])
+player_name = input('Welcome. Give your player a name: ')
+if player_name == 'q':
+    exit()
+new_player = Player(player_name, room['outside'])
+print(f'\n\nWelcome to {new_player.name}\'s Adventure. Good Luck!\n')
+print(' Type \'q\' to quit.')
+print(line)
 
 # Write a loop that:
 #
@@ -51,8 +56,40 @@ player1 = Player('Player 1', room['outside'])
 # If the user enters a cardinal direction, attempt to move to the room there.
 # Print an error message if the movement isn't allowed.
 #
-# If the user enters "q", quit the game.
+choice = ''
+directions = { 'n', 's', 'e', 'w' }
+dead_end = '\nThere doesn\'t seem to be anything that way.\n'
+invalid_entry = '\n*** Invalid entry\n*** [Type \'help\' for a list of commands.]'
+commands = (
+    line,
+    '\'n\'    : Move North',
+    '\'s\'    : Move South',
+    '\'e\'    : Move East',
+    '\'w\'    : Move West',
+    '\'q\'    : Quit',
+    '\'help\' : View commands',
+    line
+)
 
-choice = input('Which direction do you want to go? Type N, S, E, or W : ')
+while True:
+    print(line)
+    choice = input('\n    Which direction? => ')
+    if choice == 'q':
+        break
+    if choice == 'help':
+        for c in commands:
+            print(c)
+    if choice in directions:
+        if hasattr(new_player.current_room, f'{choice}_to'):
+            new_player.current_room = getattr(new_player.current_room, f'{choice}_to')
+        else:
+            print(dead_end)
+            break
+    elif choice not in directions:
+        print(invalid_entry)
+    print(new_player)
 
-print(choice)
+    # elif len(choice == 2):
+    #     # if drop item
+    #     if choice[0] == 'drop':
+    #         pass
